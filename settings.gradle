@@ -1,0 +1,2 @@
+rootProject.name='StrokeTextDemo'
+include ':app'
