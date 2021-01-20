@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 
 import androidx.appcompat.widget.AppCompatTextView;
@@ -20,7 +21,8 @@ import com.hc.stroketextdemo.utils.DensityUtil;
  *      优化：
  *      1.  当width = 1dp | height = 1dp（布局文件中设置的宽高小于我们实际需要的大小）时，内容显示不全
  *      2.  当width = wrap_content && height = wrap_content时，左右两边的描边效果显示不全
- *         【BUG: width = wrap_content && height = match_parent时，仍然还有左右描边显示不全的问题】
+ *         【BUG: width = wrap_content && height = match_parent时，如果strokeWidth过大
+ *          仍然还有左右描边显示不全的问题，可以通过向左右两边填充一定的padding来解决】
  *
  *      注：宽或高纠正后，{@link StrokeTextView#setGravity(int)}会被调用【更新为Gravity.CENTER】，布局文件中设置的Gravity会无效
  */
@@ -107,6 +109,8 @@ public class StrokeTextView3 extends AppCompatTextView {
         float heightWeNeed = getCompoundPaddingTop() + getCompoundPaddingBottom() +
                 mStrokeWidth + mTextRect.height() + DensityUtil.dp2px(getContext(), 4);
 
+        Log.d("jamgu", "onMeasure() baseline = " + getBaseline());
+
         // specific size or match_parent，but we only handle specific size here
         if (widthMode == MeasureSpec.EXACTLY || heightMode == MeasureSpec.EXACTLY) {
 
@@ -150,11 +154,14 @@ public class StrokeTextView3 extends AppCompatTextView {
                 setGravity(Gravity.CENTER);
             }
 
-            setMeasuredDimension(modifiedWidth, modifiedHeight);
+//            setMeasuredDimension(modifiedWidth, modifiedHeight);
+            super.onMeasure(MeasureSpec.makeMeasureSpec(modifiedWidth, MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(modifiedHeight, MeasureSpec.EXACTLY));
         }
 
         // mCallCount = 2时重置，避免list复用问题
         mCallCount %= 2;
+        Log.d("jamgu", "onMeasure() after baseline = " + getBaseline());
     }
 
     @Override
@@ -162,6 +169,8 @@ public class StrokeTextView3 extends AppCompatTextView {
 
         String text = getText().toString();
 
+        int baseline = getBaseline();
+        Log.d("jamgu", "onDraw() baseline = " + baseline);
         if (!TextUtils.isEmpty(text)) {
 
             //在文本底层画出带描边的文本
@@ -170,21 +179,24 @@ public class StrokeTextView3 extends AppCompatTextView {
             // 优化描边位置的计算，同时支持左、右padding
             if ((gravity & Gravity.LEFT) == Gravity.LEFT) {
                 canvas.drawText(text, getCompoundPaddingLeft(),
-                        getBaseline(), mStrokePaint);
+                        baseline, mStrokePaint);
             } else if ((gravity & Gravity.RIGHT) == Gravity.RIGHT) {
                 canvas.drawText(text, getWidth() - getCompoundPaddingRight() - getPaint().measureText(text),
-                        getBaseline(), mStrokePaint);
+                        baseline, mStrokePaint);
             } else {
                 // 除去左、右padding后，在剩下的空间中paint落笔的位置
                 float xInLeftSpace = (getWidth() - getCompoundPaddingRight() - getCompoundPaddingLeft() - getPaint().measureText(text)) / 2;
                 // 最终落笔点位置 [x = paddingLeft + xInLeftSpace, y = getBaseLine()]
                 canvas.drawText(text, getPaddingLeft() + xInLeftSpace,
-                        getBaseline(), mStrokePaint);
+                        baseline, mStrokePaint);
             }
 
         }
 
         super.onDraw(canvas);
+
+        Log.d("jamgu", "onDraw() after baseline = " + getBaseline());
+
     }
 
 }

@@ -14,10 +14,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:textColor="@color/white"
+        android:paddingBottom="10dp"
         android:paddingRight="10dp"
-        android:paddingLeft="20dp"
         android:background="#8000"
+        android:textColor="@color/white"
         android:text="18"
         android:layout_alignRight="@id/iv"
         android:layout_alignBottom="@id/iv" />
