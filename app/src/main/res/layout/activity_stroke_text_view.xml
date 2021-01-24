@@ -13,10 +13,8 @@
     <com.hc.stroketextdemo.StrokeTextView3
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:paddingBottom="10dp"
-        android:paddingRight="10dp"
-        android:background="#8000"
+        android:textSize="16sp"
+        android:gravity="center"
         android:textColor="@color/white"
         android:text="18"
         android:layout_alignRight="@id/iv"

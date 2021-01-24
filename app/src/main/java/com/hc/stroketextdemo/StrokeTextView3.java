@@ -105,9 +105,13 @@ public class StrokeTextView3 extends AppCompatTextView {
 
         float widthWeNeed = getCompoundPaddingRight() + getCompoundPaddingLeft() +
                 mStrokeWidth + textWidth;
-        // 加3px填充text底部的局域，使gravity = center显示正常
+
         float heightWeNeed = getCompoundPaddingTop() + getCompoundPaddingBottom() +
                 mStrokeWidth + mTextRect.height() + DensityUtil.dp2px(getContext(), 4);
+        Paint.FontMetrics fontMetrics = getPaint().getFontMetrics();
+
+        Log.d("jamgu", "mTextRect.height = " + mTextRect.height()
+                + ", fontMetrics.height = " + (fontMetrics.bottom - fontMetrics.top));
 
         Log.d("jamgu", "onMeasure() baseline = " + getBaseline());
 
