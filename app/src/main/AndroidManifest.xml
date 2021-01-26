@@ -14,6 +14,8 @@
         <activity android:name=".base.BaseShowActivity">
         </activity>
         <activity android:name=".StrokeTextViewActivity">
+        </activity>
+        <activity android:name=".StrokeTextViewActivity2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
